@@ -1,128 +1,93 @@
-type validaOptions = "Email" | "Phone";
-interface Ivalidate {
-  Email?: string;
-  phone?: string;
+// Factory method
+
+// Define interface for task
+interface ItaskList {
+  author: string;
+  title: string;
+  tags: string[];
+  taskId: number;
 }
-interface IBaseAuth {
-  username: string;
-  readonly email?: string;
-  readonly phoneNumber?: string;
-  validate(): void;
+interface ITask extends ItaskList {
+  taskList: ItaskList[];
+  addTask(): void;
+  getTasks(): void;
 }
-// Interfaces for Objects
 
-interface Ilogin extends IBaseAuth {}
-
-interface Iregister extends IBaseAuth {}
-
-// Define variants for each object
-class LoginByEmail implements Ilogin {
-  readonly email;
-  username: string = "";
-  private emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,20}$/;
-
-  constructor(username: string, email: string) {
-    this.username = username;
-    this.email = email;
+class AdminTask implements ITask {
+  taskId: number;
+  taskList: ItaskList[] = [];
+  author: string;
+  title: string;
+  tags: string[];
+  constructor(id: number, author: string, title: string, tags: string[]) {
+    this.taskId = id;
+    this.author = author;
+    this.title = title;
+    this.tags = tags;
   }
+  addTask(): void {
+    this.taskList.push({
+      title: this.title,
+      author: this.author,
+      taskId: this.taskId,
+      tags: this.tags,
+    });
+    console.log("Added task", this.taskList);
+  }
+  getTasks(): void {
+    console.log("List of tasks ");
+    console.log(this.taskList);
+  }
+}
 
-  validate(): void {
-    if (this.emailRegex.test(this.email)) {
-      console.log("Email is valid");
+class UserTask implements ITask {
+  taskId: number;
+  taskList: ItaskList[];
+  author: string;
+  title: string;
+  tags: string[];
+
+  constructor(id: number, author: string, title: string, tags: string[]) {
+    this.taskId = id;
+    this.author = author;
+    this.title = title;
+    this.tags = tags;
+  }
+  addTask(): void {
+    this.taskList.push({
+      title: this.title,
+      author: this.author,
+      taskId: this.taskId,
+      tags: this.tags,
+    });
+    console.log("tasks added to task list");
+  }
+  getTasks(): void {
+    console.log("List of tasks ");
+    console.log(this.taskList);
+  }
+}
+
+// Define task factory
+
+class TaskFactory {
+  public static createTask(
+    role: string,
+    id: number,
+    author: string,
+    title: string,
+    tags: string[]
+  ): ITask {
+    if (role === "Admin") {
+      return new AdminTask(id, author, title, tags);
     } else {
-      console.log("Email is not valid");
+      return new UserTask(id, author, title, tags);
     }
   }
 }
 
-class LoginByPhone implements Ilogin {
-  username: string = "";
-  readonly phoneNumber;
-  phoneRegex = /^(\+98|0)?9\d{9}$/g;
-  constructor(username: string, phone: string) {
-    this.username = username;
-    this.phoneNumber = phone;
-  }
+const taskForAdmin = TaskFactory.createTask("Admin", 1, "Torabi", "new task", [
+  "important",
+]);
 
-  validate(): void {
-    if (this.phoneRegex.test(this.phoneNumber)) {
-      console.log("Phone number is valid");
-    } else {
-      console.log("Phone number is not valid");
-    }
-  }
-}
-
-class RegisterByEmail implements Iregister {
-  private emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,20}$/;
-  username: string = "";
-  readonly email;
-  constructor(username: string, email: string) {
-    this.username = username;
-    this.email = email;
-  }
-  validate(): void {
-    if (this.emailRegex.test(this.email)) {
-      console.log("registeration done with valid email");
-    } else {
-      console.log("Registartion was not successfull");
-    }
-  }
-}
-
-class registerByPhone implements Iregister {
-  username: string = "";
-  readonly phoneNumber;
-  phoneRegex = /^(\+98|0)?9\d{9}$/g;
-  constructor(username: string, phone: string) {
-    this.username = username;
-    this.phoneNumber = phone;
-  }
-  validate(): void {
-    if (this.phoneRegex.test(this.phoneNumber)) {
-      console.log("Registration has done with valid phone numebr");
-    } else {
-      console.log("Registartion faild");
-    }
-  }
-}
-
-// Abstarct interface
-interface IAuthFactory {
-  createLogin(username: string, email?: string, phone?: string): Ilogin;
-  createRegister(username: string, email?: string, phone?: string): Iregister;
-}
-
-class authByEmailFactory implements IAuthFactory {
-  createLogin(username: string, email: string): Ilogin {
-    return new LoginByEmail(username, email);
-  }
-  createRegister(username: string, email: string): Iregister {
-    return new RegisterByEmail(username, email);
-  }
-}
-
-class authByPhoneFactory implements IAuthFactory {
-  createLogin(username: string, phone: string): Ilogin {
-    return new LoginByPhone(username, phone);
-  }
-  createRegister(username: string, phone: string): Iregister {
-    return new registerByPhone(username, phone);
-  }
-}
-
-// Phone factory
-/// Create an instance of auth by phone factory
-const phoneAuthFactory = new authByPhoneFactory();
-/// Create an instance of login by phone
-const loginWithPhone = phoneAuthFactory.createLogin("Torabi", "09336207447");
-/// Validate login by phone number
-loginWithPhone.validate();
-
-// Email factory
-/// Create an instance of auth by email factory
-const emailAuthFactory = new authByEmailFactory();
-/// Create an instance of login by email
-const loginByEmail = emailAuthFactory.createLogin("Torabi", "torabi@gmail.com");
-/// Validate login by email address
-loginByEmail.validate();
+taskForAdmin.addTask();
