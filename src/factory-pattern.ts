@@ -91,3 +91,14 @@ const taskForAdmin = TaskFactory.createTask("Admin", 1, "Torabi", "new task", [
 ]);
 
 taskForAdmin.addTask();
+
+// User task
+const taskForUsr = TaskFactory.createTask(
+  "user",
+  2,
+  "Emadil",
+  "new task for emadi",
+  ["imporatnt", "business"]
+);
+
+taskForUsr.addTask();

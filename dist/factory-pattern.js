@@ -1,97 +1,64 @@
 "use strict";
-// Define variants for each object
-class LoginByEmail {
-    constructor(username, email) {
-        this.username = "";
-        this.emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,20}$/;
-        this.username = username;
-        this.email = email;
+// Factory method
+class AdminTask {
+    constructor(id, author, title, tags) {
+        this.taskList = [];
+        this.taskId = id;
+        this.author = author;
+        this.title = title;
+        this.tags = tags;
     }
-    validate() {
-        if (this.emailRegex.test(this.email)) {
-            console.log("Email is valid");
+    addTask() {
+        this.taskList.push({
+            title: this.title,
+            author: this.author,
+            taskId: this.taskId,
+            tags: this.tags,
+        });
+        console.log("Added task", this.taskList);
+    }
+    getTasks() {
+        console.log("List of tasks ");
+        console.log(this.taskList);
+    }
+}
+class UserTask {
+    constructor(id, author, title, tags) {
+        this.taskId = id;
+        this.author = author;
+        this.title = title;
+        this.tags = tags;
+    }
+    addTask() {
+        this.taskList.push({
+            title: this.title,
+            author: this.author,
+            taskId: this.taskId,
+            tags: this.tags,
+        });
+        console.log("tasks added to task list");
+    }
+    getTasks() {
+        console.log("List of tasks ");
+        console.log(this.taskList);
+    }
+}
+// Define task factory
+class TaskFactory {
+    static createTask(role, id, author, title, tags) {
+        if (role === "Admin") {
+            return new AdminTask(id, author, title, tags);
         }
         else {
-            console.log("Email is not valid");
+            return new UserTask(id, author, title, tags);
         }
     }
 }
-class LoginByPhone {
-    constructor(username, phone) {
-        this.username = "";
-        this.phoneRegex = /^(\+98|0)?9\d{9}$/g;
-        this.username = username;
-        this.phoneNumber = phone;
-    }
-    validate() {
-        if (this.phoneRegex.test(this.phoneNumber)) {
-            console.log("Phone number is valid");
-        }
-        else {
-            console.log("Phone number is not valid");
-        }
-    }
-}
-class RegisterByEmail {
-    constructor(username, email) {
-        this.emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,20}$/;
-        this.username = "";
-        this.username = username;
-        this.email = email;
-    }
-    validate() {
-        if (this.emailRegex.test(this.email)) {
-            console.log("registeration done with valid email");
-        }
-        else {
-            console.log("Registartion was not successfull");
-        }
-    }
-}
-class registerByPhone {
-    constructor(username, phone) {
-        this.username = "";
-        this.phoneRegex = /^(\+98|0)?9\d{9}$/g;
-        this.username = username;
-        this.phoneNumber = phone;
-    }
-    validate() {
-        if (this.phoneRegex.test(this.phoneNumber)) {
-            console.log("Registration has done with valid phone numebr");
-        }
-        else {
-            console.log("Registartion faild");
-        }
-    }
-}
-class authByEmailFactory {
-    createLogin(username, email) {
-        return new LoginByEmail(username, email);
-    }
-    createRegister(username, email) {
-        return new RegisterByEmail(username, email);
-    }
-}
-class authByPhoneFactory {
-    createLogin(username, phone) {
-        return new LoginByPhone(username, phone);
-    }
-    createRegister(username, phone) {
-        return new registerByPhone(username, phone);
-    }
-}
-// Phone factory
-/// Create an instance of auth by phone factory
-const phoneAuthFactory = new authByPhoneFactory();
-/// Create an instance of login by phone
-const loginWithPhone = phoneAuthFactory.createLogin("Torabi", "09336207447");
-/// Validate login by phone number
-loginWithPhone.validate();
-// Email factory
-/// Create an instance of auth by email factory
-const emailAuthFactory = new authByEmailFactory();
-/// Create an instance of login by email
-const loginByEmail = emailAuthFactory.createLogin("Torabi", "torabi@gmail.com");
-/// Validate login by email address
-loginByEmail.validate();
+const taskForAdmin = TaskFactory.createTask("Admin", 1, "Torabi", "new task", [
+    "important",
+]);
+taskForAdmin.addTask();
+// User task
+const taskForUsr = TaskFactory.createTask("user", 2, "Emadil", "new task for emadi", ["imporatnt", "business"]);
+taskForUsr.addTask();
 //# sourceMappingURL=factory-pattern.js.map
